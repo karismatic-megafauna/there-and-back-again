@@ -1,50 +1,50 @@
 window.onload = function() {
-  var shipInfo = {
-    fuel: {
-      reserve: 100,
-      consumptionRate: 10,
-    },
-    demensions: {
-      width: 0,
-      length: 0,
-      shape: 'triangle',
-    },
-    health: 0,
-    mass: 0,
-    boosterPower: 0,
-    antiGravity: {
-      active: false,
-      duration: 0,
-      cooldown: 0,
-    },
-  }
+  // var shipInfo = {
+  //   fuel: {
+  //     reserve: 100,
+  //     consumptionRate: 10,
+  //   },
+  //   demensions: {
+  //     width: 0,
+  //     length: 0,
+  //     shape: 'triangle',
+  //   },
+  //   health: 0,
+  //   mass: 0,
+  //   boosterPower: 0,
+  //   antiGravity: {
+  //     active: false,
+  //     duration: 0,
+  //     cooldown: 0,
+  //   },
+  // }
 
-  var level = {
-    start: {
-      x: 0,
-      y: 0,
-      landed: false,
-    },
-    end: {
-      x: 0,
-      y: 0,
-      reached: false,
-    },
-    planets: [
-      {
-        size: 0,
-        mass: 0,
-        x: 0,
-        y: 0,
-      },
-    ],
-  }
+  // var level = {
+  //   start: {
+  //     x: 0,
+  //     y: 0,
+  //     landed: false,
+  //   },
+  //   end: {
+  //     x: 0,
+  //     y: 0,
+  //     reached: false,
+  //   },
+  //   planets: [
+  //     {
+  //       size: 0,
+  //       mass: 0,
+  //       x: 0,
+  //       y: 0,
+  //     },
+  //   ],
+  // }
 
   var canvas = document.getElementById("canvas");
   var context = canvas.getContext("2d");
   var width = canvas.width = window.innerWidth;
   var height = canvas.height = window.innerHeight;
-  var ship = particle.create(width / 2, height / 2, 0, 0);
+  var ship = particle.create(50, height / 2, 0, 0);
   var thrust = vector.create(0, 0);
   var angle = 0;
   var turningLeft = false;
@@ -53,9 +53,15 @@ window.onload = function() {
   var antiGravityEngaged = false;
   var fuel = 150;
   var fuelMax = 150;
+  var planets = [
+    { x: 400, y:600, radius:100, mass: 500 },
+    { x: 900, y:1000, radius:250, mass: 500 },
+    { x: 1200, y:200, radius:50, mass: 500 },
+  ]
+
+  var beacon = { x: width - 100, y: height / 2, radius:50, mass: 500 };
 
   update();
-
 
   document.body.addEventListener("keydown", function(event) {
     // console.log(event.keyCode);
@@ -132,8 +138,19 @@ window.onload = function() {
     ship.accelerate(thrust);
     ship.update();
 
-    // Fuel Meter
+    // Planets
+    planets.map(function(p){
+      context.beginPath();
+      context.ellipse(p.x, p.y, p.radius, p.radius, 0, 0, 2 *Math.PI)
+      context.stroke();
+    });
 
+    // Beacon
+    context.beginPath()
+    context.ellipse(beacon.x, beacon.y, beacon.radius, beacon.radius, 0, 0, 2 *Math.PI)
+    context.stroke()
+
+    // Fuel Meter
     context.strokeRect(10, 10, fuelMax, 25);
     context.fillStyle = 'green';
     if (fuel <= 100) {
